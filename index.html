@@ -1,81 +1,3 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>전체화면 텍스트</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background: #111;
-            color: white;
-            text-align: center;
-        }
-        #inputArea {
-            padding: 20px;
-        }
-        input, select {
-            margin: 5px;
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 8px;
-            border: none;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin: 5px;
-            background: #4CAF50;
-            border: none;
-            color: white;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        #previewArea {
-            margin-top: 20px;
-            padding: 20px;
-            min-height: 150px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 2px dashed #555;
-            background: black;
-            color: white;
-        }
-        #displayArea {
-            display: none;
-            height: 100vh;
-            width: 100%;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-    </style>
-</head>
-<body>
-
-<div id="inputArea">
-    <h1>전체화면 텍스트 설정</h1>
-    <input type="text" id="userText" placeholder="텍스트 입력" oninput="updatePreview()"><br>
-    <label>텍스트 색상:</label>
-    <input type="color" id="textColor" value="#ffffff" onchange="updatePreview()"><br>
-    <label>배경 색상:</label>
-    <input type="color" id="bgColor" value="#000000" onchange="updatePreview()"><br>
-    <label>글자 크기:</label>
-    <input type="number" id="fontSize" value="5" min="1" max="20" onchange="updatePreview()"> vw<br>
-    <button onclick="showText()">전체화면 표시</button>
-</div>
-
-<h2>미리보기</h2>
-<div id="previewArea">
-    <span id="previewText">여기에 미리보기 표시</span>
-</div>
-
-<div id="displayArea" onclick="exitFullScreen()">
-    <span id="outputText"></span>
-</div>
-
 <script>
     function updatePreview() {
         const text = document.getElementById("userText").value || "여기에 미리보기 표시";
@@ -125,21 +47,25 @@
     }
 
     function exitFullScreen() {
-    if (document.exitFullscreen) {
-        document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+        document.getElementById("displayArea").style.display = "none";
+        document.getElementById("outputText").innerText = "";
     }
-    document.getElementById("displayArea").style.display = "none";
-    document.getElementById("outputText").innerText = ""; // 글씨 지우기
-}
 
+    // ESC나 다른 방법으로 전체화면이 꺼졌을 때 처리
+    document.addEventListener("fullscreenchange", () => {
+        if (!document.fullscreenElement) {
+            document.getElementById("displayArea").style.display = "none";
+            document.getElementById("outputText").innerText = "";
+        }
+    });
 
     // 페이지 로드 시 기본 미리보기
     updatePreview();
 </script>
-
-</body>
-</html>
