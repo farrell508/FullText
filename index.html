@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Full Text</title>
     <style>
         body {
@@ -26,7 +26,7 @@
             padding: 10px 20px;
             font-size: 16px;
             margin: 5px;
-            background: #4CAF50;
+            background: #4caf50;
             border: none;
             color: white;
             border-radius: 8px;
@@ -56,15 +56,15 @@
 <body>
 
 <div id="inputArea">
-    <h1>FullText Setting</h1>
-    <input type="text" id="userText" placeholder="Text Input:" oninput="updatePreview()"><br>
-    <label>Text Color:</label>
-    <input type="color" id="textColor" value="#ffffff" onchange="updatePreview()"><br>
-    <label>Background Color:</label>
-    <input type="color" id="bgColor" value="#000000" onchange="updatePreview()"><br>
-    <label>Text size:</label>
-    <input type="number" id="fontSize" value="5" min="1" max="100" onchange="updatePreview()"> vw<br>
-    <button onclick="showText()">Make Full Text</button>
+    <h1>Full Text Settings</h1>
+    <input type="text" id="userText" placeholder="Enter your text here" oninput="updatePreview()" /><br />
+    <label for="textColor">Text Color:</label>
+    <input type="color" id="textColor" value="#ffffff" onchange="updatePreview()" /><br />
+    <label for="bgColor">Background Color:</label>
+    <input type="color" id="bgColor" value="#000000" onchange="updatePreview()" /><br />
+    <label for="fontSize">Text Size:</label>
+    <input type="number" id="fontSize" value="5" min="1" max="100" onchange="updatePreview()" /> vw<br />
+    <button onclick="showText()">Show Full Screen</button>
 </div>
 
 <h2>Preview</h2>
@@ -77,23 +77,38 @@
 </div>
 
 <script>
-    function showTextFullPage() {
+    function updatePreview() {
+        const text = document.getElementById("userText").value || "Preview Here";
+        const color = document.getElementById("textColor").value;
+        const bg = document.getElementById("bgColor").value;
+        const size = document.getElementById("fontSize").value;
+
+        const preview = document.getElementById("previewArea");
+        const previewText = document.getElementById("previewText");
+
+        preview.style.background = bg;
+        previewText.style.color = color;
+        previewText.style.fontSize = size + "vw";
+        previewText.innerText = text;
+    }
+
+    function showText() {
         const text = document.getElementById("userText").value;
         if (!text.trim()) {
-            alert("Enter Text");
+            alert("Please enter some text!");
             return;
         }
         const color = document.getElementById("textColor").value;
         const bg = document.getElementById("bgColor").value;
         const size = document.getElementById("fontSize").value;
 
-        
         document.body.style.background = bg;
         document.body.style.color = color;
         document.body.style.fontSize = size + "vw";
         document.body.style.display = "flex";
         document.body.style.justifyContent = "center";
         document.body.style.alignItems = "center";
+        document.body.style.margin = "0";
         document.body.innerHTML = text;
 
         if (document.documentElement.requestFullscreen) {
@@ -103,16 +118,28 @@
         } else if (document.documentElement.msRequestFullscreen) {
             document.documentElement.msRequestFullscreen();
         }
+
+        // When fullscreen is exited, reload the page to restore inputs
         document.addEventListener("fullscreenchange", () => {
             if (!document.fullscreenElement) {
-                location.reload(); 
+                location.reload();
             }
         });
     }
+
+    function exitFullScreen() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+    }
+
+    // Initialize preview on page load
+    updatePreview();
 </script>
-
-
-
 
 </body>
 </html>
