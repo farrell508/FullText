@@ -32,6 +32,17 @@
             font-size: 16px;
             margin-right: 10px;
         }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 10px;
+            background: #4caf50;
+            border: none;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
         #previewArea {
             margin: 20px auto;
             padding: 20px;
@@ -46,6 +57,22 @@
             word-wrap: break-word;
         }
         #previewText {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        #displayArea {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 100vw;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: black;
+            z-index: 1000;
+        }
+        #outputText {
             font-family: 'Noto Sans KR', sans-serif;
         }
     </style>
@@ -64,10 +91,15 @@
         <label for="fontSize">Text Size (vw):</label>
         <input type="number" id="fontSize" value="5" min="1" max="100" onchange="updatePreview()" />
         <br /><br />
+        <button onclick="showText()">Show Full Screen</button>
     </div>
 
     <div id="previewArea">
         <span id="previewText">Preview Here</span>
+    </div>
+
+    <div id="displayArea" onclick="exitFullScreen()">
+        <span id="outputText"></span>
     </div>
 
     <script>
@@ -86,8 +118,71 @@
             previewText.innerText = text;
         }
 
+        function showText() {
+            const text = document.getElementById("userText").value;
+            if (!text.trim()) {
+                alert("Please enter some text!");
+                return;
+            }
+            const color = document.getElementById("textColor").value;
+            const bg = document.getElementById("bgColor").value;
+            const size = Math.max(1, Math.min(100, parseFloat(document.getElementById("fontSize").value) || 5));
+
+            const displayArea = document.getElementById("displayArea");
+            const outputText = document.getElementById("outputText");
+
+            displayArea.style.display = "flex";
+            displayArea.style.background = bg;
+            outputText.style.color = color;
+            outputText.style.fontSize = size + "vw";
+            outputText.innerText = text;
+            document.getElementById("inputArea").style.display = "none";
+            document.getElementById("previewArea").style.display = "none";
+
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(err => console.error("Fullscreen request failed:", err));
+            } else if (document.documentElement.webkitRequestFullscreen) {
+                document.documentElement.webkitRequestFullscreen();
+            } else if (document.documentElement.msRequestFullscreen) {
+                document.documentElement.msRequestFullscreen();
+            }
+        }
+
+        function exitFullScreen() {
+            if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+            const displayArea = document.getElementById("displayArea");
+            displayArea.style.display = "none";
+            document.getElementById("inputArea").style.display = "block";
+            document.getElementById("previewArea").style.display = "flex";
+        }
+
         // 페이지 로드 후 즉시 미리보기 업데이트
         window.onload = updatePreview;
+
+        // 전체 화면 변경 이벤트 처리
+        document.addEventListener("fullscreenchange", () => {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
+                exitFullScreen();
+            }
+        });
+        document.addEventListener("webkitfullscreenchange", () => {
+            if (!document.webkitFullscreenElement) {
+                exitFullScreen();
+            }
+        });
+        document.addEventListener("msfullscreenchange", () => {
+            if (!document.msFullscreenElement) {
+                exitFullScreen();
+            }
+        });
     </script>
 </body>
 </html>
