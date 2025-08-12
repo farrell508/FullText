@@ -7,30 +7,41 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
             margin: 0;
             background: #111;
             color: white;
+            text-align: center;
         }
         #inputArea {
-            padding: 50px;
+            padding: 20px;
         }
-        input {
-            width: 80%;
-            padding: 15px;
-            font-size: 20px;
+        input, select {
+            margin: 5px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
             border: none;
-            border-radius: 10px;
         }
         button {
-            padding: 15px 30px;
-            font-size: 20px;
-            margin-left: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
             background: #4CAF50;
             border: none;
             color: white;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
+        }
+        #previewArea {
+            margin-top: 20px;
+            padding: 20px;
+            min-height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px dashed #555;
+            background: black;
+            color: white;
         }
         #displayArea {
             display: none;
@@ -38,7 +49,6 @@
             width: 100%;
             justify-content: center;
             align-items: center;
-            font-size: 5vw;
             text-align: center;
         }
     </style>
@@ -46,9 +56,20 @@
 <body>
 
 <div id="inputArea">
-    <h1>원하는 텍스트를 입력하세요</h1>
-    <input type="text" id="userText" placeholder="여기에 입력">
+    <h1>전체화면 텍스트 설정</h1>
+    <input type="text" id="userText" placeholder="텍스트 입력" oninput="updatePreview()"><br>
+    <label>텍스트 색상:</label>
+    <input type="color" id="textColor" value="#ffffff" onchange="updatePreview()"><br>
+    <label>배경 색상:</label>
+    <input type="color" id="bgColor" value="#000000" onchange="updatePreview()"><br>
+    <label>글자 크기:</label>
+    <input type="number" id="fontSize" value="5" min="1" max="20" onchange="updatePreview()"> vw<br>
     <button onclick="showText()">전체화면 표시</button>
+</div>
+
+<h2>미리보기</h2>
+<div id="previewArea">
+    <span id="previewText">여기에 미리보기 표시</span>
 </div>
 
 <div id="displayArea" onclick="exitFullScreen()">
@@ -56,23 +77,49 @@
 </div>
 
 <script>
+    function updatePreview() {
+        const text = document.getElementById("userText").value || "여기에 미리보기 표시";
+        const color = document.getElementById("textColor").value;
+        const bg = document.getElementById("bgColor").value;
+        const size = document.getElementById("fontSize").value;
+
+        let preview = document.getElementById("previewArea");
+        let previewText = document.getElementById("previewText");
+
+        preview.style.background = bg;
+        previewText.style.color = color;
+        previewText.style.fontSize = size + "vw";
+        previewText.innerText = text;
+    }
+
     function showText() {
         const text = document.getElementById("userText").value;
         if (!text.trim()) {
             alert("텍스트를 입력하세요!");
             return;
         }
-        document.getElementById("outputText").innerText = text;
-        document.getElementById("displayArea").style.display = "flex";
-        openFullScreen(document.getElementById("displayArea"));
+        const color = document.getElementById("textColor").value;
+        const bg = document.getElementById("bgColor").value;
+        const size = document.getElementById("fontSize").value;
+
+        let display = document.getElementById("displayArea");
+        let output = document.getElementById("outputText");
+
+        display.style.background = bg;
+        output.style.color = color;
+        output.style.fontSize = size + "vw";
+        output.innerText = text;
+
+        display.style.display = "flex";
+        openFullScreen(display);
     }
 
     function openFullScreen(elem) {
         if (elem.requestFullscreen) {
             elem.requestFullscreen();
-        } else if (elem.webkitRequestFullscreen) { /* Safari */
+        } else if (elem.webkitRequestFullscreen) {
             elem.webkitRequestFullscreen();
-        } else if (elem.msRequestFullscreen) { /* IE11 */
+        } else if (elem.msRequestFullscreen) {
             elem.msRequestFullscreen();
         }
     }
@@ -87,6 +134,9 @@
         }
         document.getElementById("displayArea").style.display = "none";
     }
+
+    // 페이지 로드 시 기본 미리보기
+    updatePreview();
 </script>
 
 </body>
