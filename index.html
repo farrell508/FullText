@@ -102,15 +102,32 @@
         const bg = document.getElementById("bgColor").value;
         const size = document.getElementById("fontSize").value;
 
-        let display = document.getElementById("displayArea");
-        let output = document.getElementById("outputText");
+        // 전체화면용 div 동적 생성
+        let display = document.createElement("div");
+        display.id = "displayArea";
+        display.style.cssText = `
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+            width:100%;
+            background:${bg};
+            text-align:center;
+        `;
 
-        display.style.background = bg;
+        let output = document.createElement("span");
+        output.id = "outputText";
+        output.innerText = text;
         output.style.color = color;
         output.style.fontSize = size + "vw";
-        output.innerText = text;
 
-        display.style.display = "flex";
+        display.appendChild(output);
+        document.body.appendChild(display);
+
+        // 클릭 시 전체화면 종료
+        display.addEventListener("click", exitFullScreen);
+
+        // 전체화면 실행
         openFullScreen(display);
     }
 
@@ -132,21 +149,19 @@
         } else if (document.msExitFullscreen) {
             document.msExitFullscreen();
         }
-        document.getElementById("displayArea").style.display = "none";
-        document.getElementById("outputText").innerText = "";
     }
 
-    // ESC나 다른 방법으로 전체화면이 꺼졌을 때 처리
+    // ESC나 전체화면 종료 시 DOM에서 아예 삭제
     document.addEventListener("fullscreenchange", () => {
         if (!document.fullscreenElement) {
-            document.getElementById("displayArea").style.display = "none";
-            document.getElementById("outputText").innerText = "";
+            let display = document.getElementById("displayArea");
+            if (display) display.remove();
         }
     });
 
-    // 페이지 로드 시 기본 미리보기
     updatePreview();
 </script>
+
 
 
 </body>
