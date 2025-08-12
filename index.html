@@ -1,69 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="description" content="Extend your Text To Full Size">
-<meta name="keywords" content="FullText, LargeText, BigText, ExtendText">
-<meta name="robots" content="index, follow">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Extend your Text To Full Size">
+    <meta name="keywords" content="FullText, LargeText, BigText, ExtendText">
+    <meta name="robots" content="index, follow">
 
-<title>Full Text Preview Test</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-  }
-  #previewArea {
-    margin-top: 20px;
-    padding: 20px;
-    min-height: 100px;
-    border: 2px dashed #555;
-    background: black;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-</style>
+    <title>Full Text Preview Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            margin: 20px;
+            background: #111;
+            color: white;
+            text-align: center;
+        }
+        #inputArea {
+            padding: 20px;
+        }
+        input {
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: none;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        label {
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        #previewArea {
+            margin: 20px auto;
+            padding: 20px;
+            min-height: 100px;
+            max-width: 80%;
+            border: 2px dashed #555;
+            background: black;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            word-wrap: break-word;
+        }
+        #previewText {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+    </style>
 </head>
 <body>
+    <div id="inputArea">
+        <h1>Full Text Preview Test</h1>
+        <input type="text" id="userText" placeholder="Type text here" oninput="updatePreview()" />
+        <br /><br />
+        <label for="textColor">Text Color:</label>
+        <input type="color" id="textColor" value="#ffffff" onchange="updatePreview()" />
+        <br /><br />
+        <label for="bgColor">Background Color:</label>
+        <input type="color" id="bgColor" value="#000000" onchange="updatePreview()" />
+        <br /><br />
+        <label for="fontSize">Text Size (vw):</label>
+        <input type="number" id="fontSize" value="5" min="1" max="100" onchange="updatePreview()" />
+        <br /><br />
+    </div>
 
-<h1>Full Text Preview Test</h1>
-<input type="text" id="userText" placeholder="Type text here" oninput="updatePreview()" />
-<br /><br />
-<label for="textColor">Text Color:</label>
-<input type="color" id="textColor" value="#ffffff" onchange="updatePreview()" />
-<br /><br />
-<label for="bgColor">Background Color:</label>
-<input type="color" id="bgColor" value="#000000" onchange="updatePreview()" />
-<br /><br />
-<label for="fontSize">Text Size (vw):</label>
-<input type="number" id="fontSize" value="5" min="1" max="100" onchange="updatePreview()" />
-<br /><br />
+    <div id="previewArea">
+        <span id="previewText">Preview Here</span>
+    </div>
 
-<div id="previewArea">
-  <span id="previewText">Preview Here</span>
-</div>
+    <script>
+        function updatePreview() {
+            const text = document.getElementById("userText").value || "Preview Here";
+            const color = document.getElementById("textColor").value;
+            const bg = document.getElementById("bgColor").value;
+            const size = Math.max(1, Math.min(100, parseFloat(document.getElementById("fontSize").value) || 5));
 
-<script>
-  function updatePreview() {
-    const text = document.getElementById("userText").value || "Preview Here";
-    const color = document.getElementById("textColor").value;
-    const bg = document.getElementById("bgColor").value;
-    const size = document.getElementById("fontSize").value;
+            const preview = document.getElementById("previewArea");
+            const previewText = document.getElementById("previewText");
 
-    const preview = document.getElementById("previewArea");
-    const previewText = document.getElementById("previewText");
+            preview.style.background = bg;
+            previewText.style.color = color;
+            previewText.style.fontSize = size + "vw";
+            previewText.innerText = text;
+        }
 
-    preview.style.background = bg;
-    previewText.style.color = color;
-    previewText.style.fontSize = size + "vw";
-    previewText.innerText = text;
-  }
-
-  // 페이지 로드 후 즉시 미리보기 업데이트
-  window.onload = updatePreview;
-</script>
-
+        // 페이지 로드 후 즉시 미리보기 업데이트
+        window.onload = updatePreview;
+    </script>
 </body>
 </html>
