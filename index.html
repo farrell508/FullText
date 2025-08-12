@@ -125,15 +125,17 @@
     }
 
     function exitFullScreen() {
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) {
-            document.msExitFullscreen();
-        }
-        document.getElementById("displayArea").style.display = "none";
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
     }
+    document.getElementById("displayArea").style.display = "none";
+    document.getElementById("outputText").innerText = ""; // 글씨 지우기
+}
+
 
     // 페이지 로드 시 기본 미리보기
     updatePreview();
