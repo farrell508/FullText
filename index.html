@@ -3,120 +3,62 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Full Text</title>
+<title>Full Text Preview Test</title>
 <style>
   body {
     font-family: Arial, sans-serif;
-    margin: 0;
-    background: #111;
-    color: white;
-    text-align: center;
-  }
-  #inputArea {
-    padding: 20px;
-  }
-  input, select {
-    margin: 5px;
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 8px;
-    border: none;
-  }
-  button {
-    padding: 10px 20px;
-    font-size: 16px;
-    margin: 5px;
-    background: #4caf50;
-    border: none;
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
+    margin: 20px;
   }
   #previewArea {
     margin-top: 20px;
     padding: 20px;
-    min-height: 150px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    min-height: 100px;
     border: 2px dashed #555;
     background: black;
     color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 </style>
 </head>
 <body>
 
-<div id="inputArea">
-  <h1>Full Text Settings</h1>
-  <input type="text" id="userText" placeholder="Enter your text here" oninput="updatePreview()" /><br />
-  <label for="textColor">Text Color:</label>
-  <input type="color" id="textColor" value="#ffffff" onchange="updatePreview()" /><br />
-  <label for="bgColor">Background Color:</label>
-  <input type="color" id="bgColor" value="#000000" onchange="updatePreview()" /><br />
-  <label for="fontSize">Text Size:</label>
-  <input type="number" id="fontSize" value="5" min="1" max="100" onchange="updatePreview()" /> vw<br />
-  <button onclick="showText()">Show Full Screen</button>
-</div>
+<h1>Full Text Preview Test</h1>
+<input type="text" id="userText" placeholder="Type text here" oninput="updatePreview()" />
+<br /><br />
+<label for="textColor">Text Color:</label>
+<input type="color" id="textColor" value="#ffffff" onchange="updatePreview()" />
+<br /><br />
+<label for="bgColor">Background Color:</label>
+<input type="color" id="bgColor" value="#000000" onchange="updatePreview()" />
+<br /><br />
+<label for="fontSize">Text Size (vw):</label>
+<input type="number" id="fontSize" value="5" min="1" max="100" onchange="updatePreview()" />
+<br /><br />
 
-<h2>Preview</h2>
 <div id="previewArea">
   <span id="previewText">Preview Here</span>
 </div>
 
 <script>
-function updatePreview() {
-  const text = document.getElementById("userText").value || "Preview Here";
-  const color = document.getElementById("textColor").value;
-  const bg = document.getElementById("bgColor").value;
-  const size = document.getElementById("fontSize").value;
+  function updatePreview() {
+    const text = document.getElementById("userText").value || "Preview Here";
+    const color = document.getElementById("textColor").value;
+    const bg = document.getElementById("bgColor").value;
+    const size = document.getElementById("fontSize").value;
 
-  const preview = document.getElementById("previewArea");
-  const previewText = document.getElementById("previewText");
+    const preview = document.getElementById("previewArea");
+    const previewText = document.getElementById("previewText");
 
-  preview.style.background = bg;
-  previewText.style.color = color;
-  previewText.style.fontSize = size + "vw";
-  previewText.innerText = text;
-}
-
-function showText() {
-  const text = document.getElementById("userText").value;
-  if (!text.trim()) {
-    alert("Please enter some text!");
-    return;
+    preview.style.background = bg;
+    previewText.style.color = color;
+    previewText.style.fontSize = size + "vw";
+    previewText.innerText = text;
   }
-  const color = document.getElementById("textColor").value;
-  const bg = document.getElementById("bgColor").value;
-  const size = document.getElementById("fontSize").value;
 
-  document.body.style.background = bg;
-  document.body.style.color = color;
-  document.body.style.fontSize = size + "vw";
-  document.body.style.display = "flex";
-  document.body.style.justifyContent = "center";
-  document.body.style.alignItems = "center";
-  document.body.style.margin = "0";
-  document.body.innerHTML = text;
-
-  if (document.documentElement.requestFullscreen) {
-    document.documentElement.requestFullscreen();
-  } else if (document.documentElement.webkitRequestFullscreen) {
-    document.documentElement.webkitRequestFullscreen();
-  } else if (document.documentElement.msRequestFullscreen) {
-    document.documentElement.msRequestFullscreen();
-  }
-}
-
-// ESC나 전체화면 종료 시 페이지 새로고침해서 원래 상태 복구
-document.addEventListener("fullscreenchange", () => {
-  if (!document.fullscreenElement) {
-    location.reload();
-  }
-});
-
-// 초기 미리보기 실행
-updatePreview();
+  // 페이지 로드 후 즉시 미리보기 업데이트
+  window.onload = updatePreview;
 </script>
 
 </body>
